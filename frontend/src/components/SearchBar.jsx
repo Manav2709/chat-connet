@@ -7,19 +7,20 @@ const SearchBar = ({ loginUserId, socket, focused }) => {
     const [allUsers, setAllUsers] = useState([]); // Store all users
     const [sentFriendRequests, setSentFriendRequests] = useState(new Set());
     const [searchQuery, setSearchQuery] = useState('');
-    const { setFriends } = useContext(FriendsRequestContext);
+    const { friends, setFriends } = useContext(FriendsRequestContext);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const searchContainerRef = useRef(null);
 
-    useEffect(() => {
-        async function fetchUsers() {
-            try {
-                const response = await api.get(`/api/user/all-except-me/${loginUserId}`);
-                setAllUsers(response.data);
-            } catch (error) {
-                console.error("User fetch error:", error);
-            }
+    async function fetchUsers() {
+        try {
+            const response = await api.get(`/api/user/all-except-me/${loginUserId}`);
+            setAllUsers(response.data);
+        } catch (error) {
+            console.error("User fetch error:", error);
         }
+    }
+    useEffect(() => {
+        
         if (loginUserId) fetchUsers();
     }, [loginUserId]);
 
@@ -35,7 +36,7 @@ const SearchBar = ({ loginUserId, socket, focused }) => {
         return () => {
             socket.off("new-friend-request", handleRequestReceived);
         };
-    }, [socket, setFriends]);
+    }, [socket, friends]);
 
     // Send a friend request
     const sendRequest = async (recipientId) => {

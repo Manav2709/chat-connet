@@ -106,6 +106,7 @@ io.on("connection", (socket) => {
                 senderId: request.senderId,
                 username: senderUpdate.username
             });
+            console.log("sender: ", senderUpdate)
 
         } catch (error) {
             console.error("Friend request error:", error);
@@ -164,6 +165,7 @@ app.get('/api/user/active', async (req, res) => {
     try {
         const userIds = Array.from(onlineUsers.values());
         const users = await User.find({ _id: { $in: userIds } });
+        console.log(users)
         res.json(users);
         // console.log(users)
     } catch (error) {
